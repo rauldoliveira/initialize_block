@@ -1,0 +1,16 @@
+PROGRAM = initialize_block
+OBJS	= decode.o initialize_block.o 
+
+ifdef USE_PGXS
+	PG_CONFIG = pg_config
+	PGXS := $(shell $(PG_CONFIG) --pgxs)
+	include $(PGXS)
+else
+	subdir = contrib/initialize_block
+	top_builddir = ../..
+	include $(top_builddir)/src/Makefile.global
+	include $(top_srcdir)/contrib/contrib-global.mk
+endif
+
+# avoid linking against all libs that the server links against (xml, selinux, ...)
+LIBS = $(libpq_pgport)
