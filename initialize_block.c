@@ -56,7 +56,10 @@ GetSegmentNumberFromFileName(const char *fileName)
 int main(int argc, char *argv[]){
 
     char arquivo[500]; 
+	char *block;
     int bloco;
+	int pageOffset;
+	unsigned int position;
     
     bloco = atoi(argv[2]); ;
     strcpy(arquivo, argv[1]);
@@ -71,16 +74,16 @@ int main(int argc, char *argv[]){
 
 	segmentNumber = GetSegmentNumberFromFileName(arquivo);
 
-	int pageOffset = bloco % ((1024 * 1024 * 1024) / BLCKSZ);
+	pageOffset = bloco % ((1024 * 1024 * 1024) / BLCKSZ);
 
-	char *block = (char *)malloc(BLCKSZ);
+	block = (char *)malloc(BLCKSZ);
 	if (!block)
 	{
 		printf("\nErro: Nao foi possivel criar buffer do tamanho <%d>.\n",
 			   BLCKSZ);
 	}
 
-	unsigned int position = BLCKSZ * pageOffset;
+	position = BLCKSZ * pageOffset;
 
 	if (fseek(fp, position, SEEK_SET) != 0)
 	{
@@ -88,7 +91,12 @@ int main(int argc, char *argv[]){
 		exit(2);
 	}
 
-	fread(block, 1, BLCKSZ, fp);
+	if (fread(block, 1, BLCKSZ, fp) != BLCKSZ)
+	{
+		printf("Erro ao ler data file <%s>.\n", arquivo);
+		exit(2);
+	}
+
 
 	PageInit(block,BLCKSZ, 0);
 

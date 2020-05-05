@@ -2,7 +2,7 @@
 FD_VERSION=11.0
 
 PROGRAM = initialize_block
-#OBJS = initialize_block.o
+OBJS = initialize_block.o
 
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
